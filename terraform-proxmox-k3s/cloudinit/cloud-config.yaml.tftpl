@@ -1,0 +1,26 @@
+---
+# cloud-config
+hostname: arch-server
+timezone: Europe/Bucharest
+users:
+  - name: archuser
+    groups:
+      - wheel
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+    # Add the sudo rule here as a list/array
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+package_update: true
+packages:
+  - qemu-guest-agent
+  - htop
+  - net-tools
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+  - echo "done" > /tmp/cloud-config.done
+final_message: "The system is finally up, after $UPTIME seconds"
+ssh_pwauth: false
+disable_root: true
+preserve_hostname: true
