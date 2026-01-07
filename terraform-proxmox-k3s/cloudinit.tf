@@ -19,8 +19,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   node_name    = var.proxmox_pve_node_name
   source_file {
     path      = local_file.config.filename
-    file_name = (var.legacy_noprefix_cloudconfigfiles == true) ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
-  }
+    file_name = "cloud-config.yaml"
 }
 
 resource "local_file" "controller_config" {
