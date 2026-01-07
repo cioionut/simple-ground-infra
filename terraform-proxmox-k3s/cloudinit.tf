@@ -21,9 +21,9 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = var.proxmox_pve_node_name
+  file_name = local.target_cloud_config_name
   source_file {
     path      = local_file.config.filename
-    file_name = local.target_cloud_config_name
   }
 }
 
