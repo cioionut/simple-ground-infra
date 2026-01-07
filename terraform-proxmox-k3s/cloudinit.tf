@@ -12,18 +12,18 @@ resource "local_file" "config" {
   content  = local.rendered_yaml
 }
 
-locals {
-  # Calculate the filename here so it's a static string by the time it reaches the resource
-  target_cloud_config_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
-}
 # see https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config
 resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = var.proxmox_pve_node_name
-  file_name = local.target_cloud_config_name
-  source_file {
-    path      = local_file.config.filename
+
+  # This is where the destination name is determined
+  file_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
+
+  source_raw {
+    data      = local_file.config.content
+    file_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
   }
 }
 
