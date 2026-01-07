@@ -15,6 +15,7 @@ rules:
     level: warning
     ignore: |
       default-values.yaml
+      cloud-config.yaml.tftpl
   truthy:
     allowed-values: ["true", "false"]
 
