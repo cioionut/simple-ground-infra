@@ -18,9 +18,6 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   datastore_id = "local"
   node_name    = var.proxmox_pve_node_name
 
-  # This is where the destination name is determined
-  file_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
-
   source_raw {
     data      = local_file.config.content
     file_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
