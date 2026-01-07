@@ -40,6 +40,11 @@ variable "datastore_id" {
   default = "local-lvm"
 }
 
+variable "legacy_noprefix_cloudconfigfiles" {
+  type = bool
+  default = false
+}
+
 variable "prefix" {
   type    = string
   default = "k3s"

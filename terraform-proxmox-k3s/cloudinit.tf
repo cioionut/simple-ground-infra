@@ -8,7 +8,7 @@ locals {
   })
 }
 resource "local_file" "config" {
-  filename = "${path.module}/generated_files/${var.prefix}/app_config.yaml"
+  filename = "${path.module}/generated_files/${var.prefix}/cloud-config.yaml"
   content  = local.rendered_yaml
 }
 
@@ -19,7 +19,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   node_name    = var.proxmox_pve_node_name
   source_file {
     path      = local_file.config.filename
-    file_name = "${var.prefix}-cloud-config.yaml"
+    file_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-cloud-config.yaml"
   }
 }
 
@@ -41,7 +41,7 @@ resource "proxmox_virtual_environment_file" "controller_meta_data_cloud_config" 
 
   source_file {
     path      = local_file.controller_config[count.index].filename
-    file_name = "${var.prefix}-c${count.index}-meta-data-cloud-config.yaml"
+    file_name = var.legacy_noprefix_cloudconfigfiles ? "c${count.index}-meta-data-cloud-config.yaml" : "${var.prefix}-c${count.index}-meta-data-cloud-config.yaml"
   }
 }
 
@@ -63,6 +63,6 @@ resource "proxmox_virtual_environment_file" "worker_meta_data_cloud_config" {
 
   source_file {
     path      = local_file.worker_config[count.index].filename
-    file_name = "${var.prefix}-w${count.index}-meta-data-cloud-config.yaml"
+    file_name = var.legacy_noprefix_cloudconfigfiles ? "w${count.index}-meta-data-cloud-config.yaml" : "${var.prefix}-w${count.index}-meta-data-cloud-config.yaml"
   }
 }
