@@ -25,7 +25,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
 
 resource "local_file" "controller_config" {
   count    = var.controller_count
-  filename = "${path.module}/generated_files/${var.prefix}/c${count.index}cloud-config.yaml"
+  filename = "${path.module}/generated_files/${var.prefix}/c${count.index}-cloud-config.yaml"
   content  = <<-EOF
     ---
     # cloud-config
@@ -47,7 +47,7 @@ resource "proxmox_virtual_environment_file" "controller_meta_data_cloud_config" 
 
 resource "local_file" "worker_config" {
   count    = var.worker_count
-  filename = "${path.module}/generated_files/${var.prefix}/w${count.index}cloud-config.yaml"
+  filename = "${path.module}/generated_files/${var.prefix}/w${count.index}-cloud-config.yaml"
   content  = <<-EOF
     ---
     # cloud-config
