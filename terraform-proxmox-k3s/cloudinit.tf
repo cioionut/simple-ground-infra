@@ -17,9 +17,8 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = var.proxmox_pve_node_name
-
-  source_raw {
-    data      = local_file.config.content
+  source_file {
+    path      = local_file.config.filename
     file_name = var.legacy_noprefix_cloudconfigfiles ? "cloud-config.yaml" : "${var.prefix}-user-cloud-config.yaml"
   }
 }
