@@ -20,6 +20,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   source_file {
     path      = local_file.config.filename
     file_name = "cloud-config.yaml"
+  }
 }
 
 resource "local_file" "controller_config" {
