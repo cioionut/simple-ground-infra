@@ -1,0 +1,11 @@
+---
+- name: Update package cache (Arch Linux)
+  pacman:
+    update_cache: true
+  when: ansible_os_family == "Archlinux"
+
+- name: Ensure /etc/rancher/k3s exists
+  file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: '0755'

@@ -1,9 +1,0 @@
----
-- name: Pre-install
-  import_playbook: pre_install.yml
-
-- name: Install K3s
-  import_playbook: k3s_install.yml #
-
-- name: Post-install (Registries, NVIDIA)
-  import_playbook: post_install.yml

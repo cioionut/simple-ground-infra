@@ -1,0 +1,10 @@
+---
+# These files must exist in the same directory (ansible/roles/sgi/tasks/)
+- name: "Include Pre-Installation Tasks"
+  include_tasks: pre_install.yml
+
+# - name: "Include K3s Installation Tasks"
+#   include_tasks: k3s_install.yml
+
+# - name: "Include Post-Installation Tasks"
+#   include_tasks: post_install.yml
