@@ -1,0 +1,25 @@
+---
+namespace: cioionut
+name: sgi
+version: 1.0.0
+authors:
+  - Your Name <your.email@example.com>
+description: Infrastructure and K3s orchestration for Proxmox
+license:
+  - MIT
+tags:
+  - kubernetes
+  - proxmox
+  - k3s
+  - archlinux
+
+# These are the dependencies for the collection itself
+dependencies:
+  "kubernetes.core": ">=2.4.0"
+  "community.general": ">=6.0.0"
+
+repository: https://github.com/cioionut/simple-ground-infra
+documentation: https://github.com/cioionut/simple-ground-infra/blob/main/README.md
+homepage: https://github.com/cioionut/simple-ground-infra
+issues: https://github.com/cioionut/simple-ground-infra/issues
+readme: README.md
