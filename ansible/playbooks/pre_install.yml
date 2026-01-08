@@ -1,10 +1,15 @@
 ---
-- name: My first play
-  hosts: all
+- name: Pre-install Configuration
+  hosts: k3s_cluster
+  become: true
   tasks:
-    - name: Ping my hosts
-      ansible.builtin.ping:
+    - name: Update package cache (Arch Linux)
+      pacman:
+        update_cache: true
+      when: ansible_os_family == "Archlinux"
 
-    - name: Print message
-      ansible.builtin.debug:
-        msg: Hello world
+    - name: Ensure /etc/rancher/k3s exists
+      file:
+        path: /etc/rancher/k3s
+        state: directory
+        mode: '0755'
