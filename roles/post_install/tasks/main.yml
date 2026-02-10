@@ -1,0 +1,34 @@
+---
+- name: 1. Add registry to /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: "^.*{{ registry_domain }}"
+    line: "{{ registry_ip }} {{ registry_domain }}"
+    state: present
+    backup: true
+
+- name: 2. Configure K3s registries.yaml
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/registries.yaml
+    # Using the same content as your group_vars
+    content: |
+      mirrors:
+        "{{ registry_domain }}":
+          endpoint:
+            - "https://{{ registry_domain }}"
+      configs:
+        "{{ registry_domain }}":
+          tls:
+            insecure_skip_verify: true
+          auth:
+            username: "{{ registry_domain_username }}"
+            password: "{{ registry_domain_password }}"
+    mode: '0644'
+  register: registry_config
+
+- name: 3. Restart K3s to apply registry changes
+  ansible.builtin.systemd:
+    # Matches your inventory group names: 'server' or 'agent'
+    name: "{{ 'k3s' if 'server' in group_names else 'k3s-agent' }}"
+    state: restarted
+  when: registry_config.changed
