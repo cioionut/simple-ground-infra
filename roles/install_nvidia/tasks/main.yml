@@ -8,7 +8,7 @@
 - name: 2. Install NVIDIA packages (main driver, utils, settings)
   community.general.pacman:
     name:
-      - nvidia # Main driver package for the standard 'linux' kernel
+      - nvidia-open # Main driver package for the standard 'linux' kernel
       - nvidia-utils # Utilities and OpenGL libraries
       - nvidia-settings # NVIDIA control panel GUI
     state: present
