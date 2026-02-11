@@ -1,0 +1,26 @@
+---
+- name: 1. Update package lists and upgrade all packages
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+  register: package_update
+
+- name: 2. Install NVIDIA packages (main driver, utils, settings)
+  community.general.pacman:
+    name:
+      - nvidia # Main driver package for the standard 'linux' kernel
+      - nvidia-utils # Utilities and OpenGL libraries
+      - nvidia-settings # NVIDIA control panel GUI
+    state: present
+
+- name: 3. Rebuild initramfs to include NVIDIA kernel modules
+  ansible.builtin.command: mkinitcpio -P
+  changed_when: true
+  # This step is often needed to ensure the kernel modules are loaded correctly
+  # The pacman hook for the nvidia package should handle this, but it's a good explicit step.
+
+- name: 4. Reboot the system to load the new driver/kernel modules
+  ansible.builtin.reboot: # Reboot if system was updated
+  when: >
+    package_update.changed or
+    "'nvidia' in community.general.pacman.results|map(attribute='name')"
