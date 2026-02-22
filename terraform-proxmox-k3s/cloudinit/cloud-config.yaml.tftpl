@@ -1,8 +1,8 @@
 #cloud-config
-hostname: arch-server
+hostname: vm-k3s
 timezone: Europe/Bucharest
 users:
-  - name: archuser
+  - name: k3suser
     groups:
       - wheel
     shell: /bin/bash
@@ -14,7 +14,6 @@ package_update: true
 packages:
   - qemu-guest-agent
   - htop
-  - net-tools
 runcmd:
   - systemctl enable qemu-guest-agent
   - systemctl start qemu-guest-agent

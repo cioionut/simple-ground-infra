@@ -1,4 +1,4 @@
-variable "arch_cloud_image_url" {
+variable "os_cloud_image_url" {
   type    = string
   default = "https://fastly.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2"
 }

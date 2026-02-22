@@ -54,7 +54,7 @@ resource "proxmox_virtual_environment_vm" "controller" {
   }
   disk {
     datastore_id = var.datastore_id
-    import_from  = proxmox_virtual_environment_download_file.arch_cloud_image.id
+    import_from  = proxmox_virtual_environment_download_file.os_cloud_image.id
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
@@ -120,14 +120,10 @@ resource "proxmox_virtual_environment_vm" "worker" {
   }
   disk {
     datastore_id = var.datastore_id
-    import_from  = proxmox_virtual_environment_download_file.arch_cloud_image.id
+    import_from  = proxmox_virtual_environment_download_file.os_cloud_image.id
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
     size         = (count.index == 0 && var.use_gpu) ? 120 : 20
   }
 }
-
-# output "arch_vm_ipv4_address" {
-#   value = proxmox_virtual_environment_vm.arch_vm.ipv4_addresses[1][0]
-# }

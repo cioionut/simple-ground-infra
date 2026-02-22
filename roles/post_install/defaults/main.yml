@@ -1,6 +1,6 @@
 ---
 # Default versions (Public)
-ansible_user: archuser
+ansible_user: k3suser
 
 # Registry configuration
 registry_domain: "registry.example.com"
