@@ -1,16 +1,19 @@
 #cloud-config
 hostname: vm-k3s
 timezone: Europe/Bucharest
+# Critical for Arch/Debian to avoid sudo "unable to resolve host" errors
+manage_etc_hosts: true
 users:
   - name: k3suser
-    groups:
-      - wheel
+    # Included both: Debian uses 'sudo', Arch uses 'wheel'
+    groups: [sudo, wheel]
     shell: /bin/bash
     ssh_authorized_keys:
       - ${ssh_public_key}
     # Add the sudo rule here as a list/array
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
 package_update: true
+package_upgrade: true
 packages:
   - qemu-guest-agent
   - htop
