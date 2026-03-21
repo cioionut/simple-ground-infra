@@ -19,7 +19,7 @@
       configs:
         "{{ registry_domain }}":
           tls:
-            insecure_skip_verify: true
+            insecure_skip_verify: "{{ insecure_skip_verify }}"
           auth:
             username: "{{ registry_domain_username }}"
             password: "{{ registry_domain_password }}"

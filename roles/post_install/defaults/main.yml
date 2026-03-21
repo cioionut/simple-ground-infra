@@ -7,3 +7,4 @@ registry_domain: "registry.example.com"
 registry_ip: "192.168.1.100"
 registry_domain_username: "admin"
 registry_domain_password: "admin"
+insecure_skip_verify: true
