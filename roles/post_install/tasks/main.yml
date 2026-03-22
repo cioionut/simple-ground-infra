@@ -1,13 +1,41 @@
 ---
-- name: 1. Add registry to /etc/hosts
+- name: 1. Discover cloud-init hosts templates
+  ansible.builtin.find:
+    paths: /etc/cloud/templates
+    patterns: "hosts*.tmpl"
+    file_type: file
+  register: post_install_cloud_init_hosts_templates
+  failed_when: false
+  changed_when: false
+
+- name: 2. Build hosts files to update
+  ansible.builtin.set_fact:
+    post_install_hosts_files: >-
+      {{
+        (
+          ['/etc/hosts']
+          + (
+            post_install_cloud_init_hosts_templates.files
+            | default([])
+            | map(attribute='path')
+            | list
+          )
+        )
+        | unique
+      }}
+
+- name: 3. Add registry to hosts files
   ansible.builtin.lineinfile:
-    path: /etc/hosts
-    regexp: "^.*{{ registry_domain }}"
+    path: "{{ item }}"
+    regexp: "^.*{{ registry_domain | regex_escape() }}$"
     line: "{{ registry_ip }} {{ registry_domain }}"
     state: present
     backup: true
+  loop: "{{ post_install_hosts_files }}"
+  loop_control:
+    label: "{{ item }}"
 
-- name: 2. Configure K3s registries.yaml
+- name: 4. Configure K3s registries.yaml
   ansible.builtin.copy:
     dest: /etc/rancher/k3s/registries.yaml
     # Using the same content as your group_vars
@@ -26,7 +54,7 @@
     mode: '0644'
   register: registry_config
 
-- name: 3. Restart K3s to apply registry changes
+- name: 5. Restart K3s to apply registry changes
   ansible.builtin.systemd:
     # Matches your inventory group names: 'server' or 'agent'
     name: "{{ 'k3s' if 'server' in group_names else 'k3s-agent' }}"
