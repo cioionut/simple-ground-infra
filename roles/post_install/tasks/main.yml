@@ -5,6 +5,7 @@
     patterns: "hosts*.tmpl"
     file_type: file
   register: post_install_cloud_init_hosts_templates
+  # This prevents failure on VMs where /etc/cloud/ doesn't exist
   failed_when: false
   changed_when: false
 
@@ -35,10 +36,17 @@
   loop_control:
     label: "{{ item }}"
 
-- name: 4. Configure K3s registries.yaml
+- name: 4. Ensure K3s config directory exists
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: 5. Configure K3s registries.yaml
   ansible.builtin.copy:
     dest: /etc/rancher/k3s/registries.yaml
-    # Using the same content as your group_vars
     content: |
       mirrors:
         "{{ registry_domain }}":
@@ -47,16 +55,18 @@
       configs:
         "{{ registry_domain }}":
           tls:
-            insecure_skip_verify: {{ insecure_skip_verify }}
+            # Debian/RHEL YAML parser preference: strictly boolean
+            insecure_skip_verify: {{ insecure_skip_verify | lower }}
           auth:
             username: "{{ registry_domain_username }}"
             password: "{{ registry_domain_password }}"
     mode: '0644'
   register: registry_config
 
-- name: 5. Restart K3s to apply registry changes
+- name: 6. Restart K3s to apply registry changes
   ansible.builtin.systemd:
-    # Matches your inventory group names: 'server' or 'agent'
+    # Logic remains same for RHEL/Debian as K3s uses standard service names
     name: "{{ 'k3s' if 'server' in group_names else 'k3s-agent' }}"
     state: restarted
+    daemon_reload: true
   when: registry_config.changed
