@@ -6,13 +6,13 @@ terraform {
     # see https://github.com/hashicorp/terraform-provider-cloudinit
     cloudinit = {
       source  = "hashicorp/cloudinit"
-      version = "2.3.7"
+      version = ">=2.3.7"
     }
     # see https://registry.terraform.io/providers/bpg/proxmox
     # see https://github.com/bpg/terraform-provider-proxmox
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.86.0"
+      version = ">=0.111.1"
     }
   }
 }
