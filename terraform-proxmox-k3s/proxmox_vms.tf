@@ -72,7 +72,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
   bios        = "ovmf"
   description = "Managed by Terraform"
   cpu {
-    cores = 8
+    cores = var.worker_cpu_cores
     type  = "x86-64-v2-AES" # recommended for modern CPUs
   }
   memory {

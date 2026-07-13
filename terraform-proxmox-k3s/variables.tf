@@ -76,3 +76,12 @@ variable "worker_count" {
     error_message = "Must be 1 or more."
   }
 }
+
+variable "worker_cpu_cores" {
+  type    = number
+  default = 4
+  validation {
+    condition     = var.worker_cpu_cores >= 1
+    error_message = "Must be 1 or more."
+  }
+}
