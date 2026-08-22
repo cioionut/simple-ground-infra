@@ -12,12 +12,14 @@
       - nvidia-utils # Utilities and OpenGL libraries
       - nvidia-settings # NVIDIA control panel GUI
     state: present
+  register: nvidia_driver_install
 
 - name: 3. Install NVIDIA Container Toolkit
   community.general.pacman:
     name:
       - nvidia-container-toolkit
     state: present
+  register: nvidia_toolkit_install
 
 - name: 4. Rebuild initramfs to include NVIDIA kernel modules
   ansible.builtin.command: mkinitcpio -P
@@ -27,6 +29,4 @@
 
 - name: 5. Reboot the system to load the new driver/kernel modules
   ansible.builtin.reboot: # Reboot if system was updated
-  when: >
-    package_update.changed or
-    "'nvidia' in community.general.pacman.results|map(attribute='name')"
+  when: package_update.changed or nvidia_driver_install.changed or nvidia_toolkit_install.changed
