@@ -1,4 +1,21 @@
 ---
+# Node-level registry name resolution only.
+#
+# containerd performs image pulls and uses the node resolver, not CoreDNS, so
+# `registry_domain` must resolve on each node. Writing /etc/hosts (and the
+# cloud-init hosts template, so a rebuilt VM keeps it) is what makes that work
+# when the LAN resolver does not answer for the name.
+#
+# No `/etc/rancher/k3s/registries.yaml` is written. For a registry that serves a
+# publicly trusted certificate and answers anonymously, containerd's defaults
+# (HTTPS, system CA bundle, no credentials) are exactly what the old
+# mirror/auth/TLS block restated. Verified on ib0d: with the file removed and
+# k3s restarted, containerd resolved and pulled without a 401.
+#
+# Re-add a registries.yaml only when the facts change:
+#   - private/self-signed CA -> `tls.ca_file` (not `insecure_skip_verify`)
+#   - real registry auth    -> `auth` with credentials from vault
+#   - pull-through cache    -> `mirrors` with a genuinely different endpoint
 - name: 1. Discover cloud-init hosts templates
   ansible.builtin.find:
     paths: /etc/cloud/templates
@@ -35,38 +52,3 @@
   loop: "{{ post_install_hosts_files }}"
   loop_control:
     label: "{{ item }}"
-
-- name: 4. Ensure K3s config directory exists
-  ansible.builtin.file:
-    path: /etc/rancher/k3s
-    state: directory
-    mode: '0755'
-    owner: root
-    group: root
-
-- name: 5. Configure K3s registries.yaml
-  ansible.builtin.copy:
-    dest: /etc/rancher/k3s/registries.yaml
-    content: |
-      mirrors:
-        "{{ registry_domain }}":
-          endpoint:
-            - "https://{{ registry_domain }}"
-      configs:
-        "{{ registry_domain }}":
-          tls:
-            # Debian/RHEL YAML parser preference: strictly boolean
-            insecure_skip_verify: {{ insecure_skip_verify | lower }}
-          auth:
-            username: "{{ registry_domain_username }}"
-            password: "{{ registry_domain_password }}"
-    mode: '0644'
-  register: registry_config
-
-- name: 6. Restart K3s to apply registry changes
-  ansible.builtin.systemd:
-    # Logic remains same for RHEL/Debian as K3s uses standard service names
-    name: "{{ 'k3s' if 'server' in group_names else 'k3s-agent' }}"
-    state: restarted
-    daemon_reload: true
-  when: registry_config.changed
