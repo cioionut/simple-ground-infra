@@ -1,8 +1,14 @@
 #cloud-config
 hostname: vm-k3s
 timezone: Europe/Bucharest
-# Critical for Arch/Debian to avoid sudo "unable to resolve host" errors
-manage_etc_hosts: true
+# cloud-init must NOT manage /etc/hosts on these boxes.
+# /etc/hosts is owned by Ansible (provision/tasks/lan-host-records.yml), which writes a
+# marked block holding records the site resolver does not answer for (e.g. the local
+# registry). `manage_etc_hosts: true` renders /etc/cloud/templates/hosts.<distro>.tmpl
+# over the whole file, and cc_update_etc_hosts runs PER_ALWAYS, so the block would be
+# wiped on every boot. Instance user-data outranks cloud.cfg.d, which is why this lives here.
+# See docs/adr/0012-cloud-init-enabled-hosts-still-ansible-owned.md in the mycloud repo.
+manage_etc_hosts: false
 users:
   - name: k3suser
     # Included both: Debian uses 'sudo', Arch uses 'wheel'
