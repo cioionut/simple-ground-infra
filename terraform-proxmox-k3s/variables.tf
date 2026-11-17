@@ -41,7 +41,7 @@ variable "datastore_id" {
 }
 
 variable "legacy_noprefix_cloudconfigfiles" {
-  type = bool
+  type    = bool
   default = false
 }
 
@@ -55,7 +55,7 @@ variable "proxmox_pve_node_address" {
 }
 
 variable "proxmox_pve_node_name" {
-  type    = string
+  type = string
 }
 
 variable "ssh_public_key" {
@@ -83,5 +83,35 @@ variable "worker_cpu_cores" {
   validation {
     condition     = var.worker_cpu_cores >= 1
     error_message = "Must be 1 or more."
+  }
+}
+
+variable "controller_disk_size" {
+  type        = number
+  default     = 20
+  description = "Root disk size in GiB for every controller node. Proxmox cannot shrink a disk, so this can only grow."
+  validation {
+    condition     = var.controller_disk_size >= 1
+    error_message = "Must be 1 GiB or more."
+  }
+}
+
+variable "worker_disk_size" {
+  type        = number
+  default     = 20
+  description = "Root disk size in GiB for worker nodes (except a GPU worker, see gpu_worker_disk_size). Proxmox cannot shrink a disk, so this can only grow."
+  validation {
+    condition     = var.worker_disk_size >= 1
+    error_message = "Must be 1 GiB or more."
+  }
+}
+
+variable "gpu_worker_disk_size" {
+  type        = number
+  default     = 120
+  description = "Root disk size in GiB for the GPU worker (worker index 0 when use_gpu is true)."
+  validation {
+    condition     = var.gpu_worker_disk_size >= 1
+    error_message = "Must be 1 GiB or more."
   }
 }

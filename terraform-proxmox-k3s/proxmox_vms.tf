@@ -58,7 +58,7 @@ resource "proxmox_virtual_environment_vm" "controller" {
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
-    size         = 20
+    size         = var.controller_disk_size
   }
 }
 
@@ -124,6 +124,6 @@ resource "proxmox_virtual_environment_vm" "worker" {
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
-    size         = (count.index == 0 && var.use_gpu) ? 120 : 20
+    size         = (count.index == 0 && var.use_gpu) ? var.gpu_worker_disk_size : var.worker_disk_size
   }
 }
