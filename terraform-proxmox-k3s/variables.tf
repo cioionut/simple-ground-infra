@@ -28,7 +28,7 @@ variable "cluster_node_network_gateway" {
 
 variable "cluster_node_network_vlan_id" {
   description = "VLAN for the cluster nodes' NICs on vmbr0. Null keeps them untagged (other sites)."
-  type        = number
+  type        = string
   default     = null
 }
 
