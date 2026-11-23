@@ -32,6 +32,12 @@ variable "cluster_node_network_bridge" {
   default     = "vmbr0"
 }
 
+variable "cluster_node_network_dns_servers" {
+  description = "DNS servers handed to the nodes by PVE cloud-init. Empty leaves the image's baked DNS, which can stall boot when NTP cannot resolve."
+  type        = list(string)
+  default     = []
+}
+
 variable "cluster_node_network_vlan_id" {
   description = "VLAN ID for the cluster nodes' NICs on the cluster bridge. Null keeps them untagged (other sites)."
   type        = number

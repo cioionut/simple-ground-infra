@@ -40,6 +40,14 @@ resource "proxmox_virtual_environment_vm" "controller" {
   }
   initialization {
     datastore_id = var.datastore_id
+
+    dynamic "dns" {
+      for_each = length(var.cluster_node_network_dns_servers) > 0 ? [1] : []
+      content {
+        servers = var.cluster_node_network_dns_servers
+      }
+    }
+
     ip_config {
       ipv4 {
         address = "${local.controller_nodes[count.index].address}/24"
@@ -107,6 +115,14 @@ resource "proxmox_virtual_environment_vm" "worker" {
   }
   initialization {
     datastore_id = var.datastore_id
+
+    dynamic "dns" {
+      for_each = length(var.cluster_node_network_dns_servers) > 0 ? [1] : []
+      content {
+        servers = var.cluster_node_network_dns_servers
+      }
+    }
+
     ip_config {
       ipv4 {
         address = "${local.worker_nodes[count.index].address}/24"
