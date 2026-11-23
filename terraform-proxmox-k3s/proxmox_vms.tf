@@ -31,7 +31,7 @@ resource "proxmox_virtual_environment_vm" "controller" {
     dedicated = 4 * 1024
   }
   network_device {
-    bridge  = "vmbr0"
+    bridge  = var.cluster_node_network_bridge
     vlan_id = var.cluster_node_network_vlan_id
   }
   agent {
@@ -91,7 +91,7 @@ resource "proxmox_virtual_environment_vm" "worker" {
     }
   }
   network_device {
-    bridge  = "vmbr0"
+    bridge  = var.cluster_node_network_bridge
     vlan_id = var.cluster_node_network_vlan_id
   }
   # should be true if qemu agent is not installed / enabled on the VM

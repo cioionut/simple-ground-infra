@@ -26,8 +26,14 @@ variable "cluster_node_network_gateway" {
   type        = string
 }
 
+variable "cluster_node_network_bridge" {
+  description = "Proxmox bridge for the cluster nodes' NICs."
+  type        = string
+  default     = "vmbr0"
+}
+
 variable "cluster_node_network_vlan_id" {
-  description = "VLAN ID for the cluster nodes' NICs on vmbr0. Null keeps them untagged (other sites)."
+  description = "VLAN ID for the cluster nodes' NICs on the cluster bridge. Null keeps them untagged (other sites)."
   type        = number
   default     = null
 }
